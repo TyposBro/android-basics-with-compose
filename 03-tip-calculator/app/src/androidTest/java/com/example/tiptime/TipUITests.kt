@@ -9,6 +9,9 @@ import org.junit.Rule
 import org.junit.Test
 import java.text.NumberFormat
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+
 class TipUITests {
     @get: Rule
     val composeTestRule = createComposeRule()
@@ -18,7 +21,7 @@ class TipUITests {
     fun calculate_20_percent_tip() {
         composeTestRule.setContent {
             TipTimeTheme {
-                Surface {
+                Surface(modifier = Modifier.fillMaxSize()) {
 
                     TipTimeLayout()
                 }
