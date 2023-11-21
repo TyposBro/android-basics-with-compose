@@ -30,10 +30,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -65,7 +69,9 @@ class MainActivity : ComponentActivity() {
 fun WoofApp() {
     LazyColumn {
         items(dogs) {
-            DogItem(dog = it)
+            DogItem(
+                dog = it, modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+            )
         }
     }
 }
@@ -78,16 +84,17 @@ fun WoofApp() {
  */
 @Composable
 fun DogItem(
-    dog: Dog,
-    modifier: Modifier = Modifier
+    dog: Dog, modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_small))
-    ) {
-        DogIcon(dog.imageResourceId)
-        DogInformation(dog.name, dog.age)
+    Card(modifier = modifier) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_small))
+        ) {
+            DogIcon(dog.imageResourceId)
+            DogInformation(dog.name, dog.age)
+        }
     }
 }
 
@@ -99,20 +106,14 @@ fun DogItem(
  */
 @Composable
 fun DogIcon(
-    @DrawableRes dogIcon: Int,
-    modifier: Modifier = Modifier
+    @DrawableRes dogIcon: Int, modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = modifier
+        painterResource(dogIcon), null, modifier
             .size(dimensionResource(R.dimen.image_size))
-            .padding(dimensionResource(R.dimen.padding_small)),
-        painter = painterResource(dogIcon),
-
-        // Content Description is not needed here - image is decorative, and setting a null content
-        // description allows accessibility services to skip this element during navigation.
-
-        contentDescription = null
-    )
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(MaterialTheme.shapes.small), contentScale = ContentScale.Crop
+        )
 }
 
 /**
@@ -124,9 +125,7 @@ fun DogIcon(
  */
 @Composable
 fun DogInformation(
-    @StringRes dogName: Int,
-    dogAge: Int,
-    modifier: Modifier = Modifier
+    @StringRes dogName: Int, dogAge: Int, modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(
