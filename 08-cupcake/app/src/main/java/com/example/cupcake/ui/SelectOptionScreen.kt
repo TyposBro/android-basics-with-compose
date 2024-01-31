@@ -50,34 +50,26 @@ import com.example.cupcake.ui.components.FormattedPriceLabel
 fun SelectOptionScreen(
     subtotal: String,
     options: List<String>,
+    modifier: Modifier = Modifier,
     onSelectionChanged: (String) -> Unit = {},
-    modifier: Modifier = Modifier
-){
+    onNextButtonClicked: () -> Unit = {},
+    onCancelButtonClicked: () -> Unit = {},
+) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier = modifier, verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))){
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
             options.forEach { item ->
-                Row(
-                    modifier = Modifier.selectable(
-                        selected = selectedValue == item,
-                        onClick = {
-                            selectedValue = item
-                            onSelectionChanged(item)
-                        }
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    RadioButton(
-                        selected = selectedValue == item,
-                        onClick = {
-                            selectedValue = item
-                            onSelectionChanged(item)
-                        }
-                    )
+                Row(modifier = Modifier.selectable(selected = selectedValue == item, onClick = {
+                    selectedValue = item
+                    onSelectionChanged(item)
+                }), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = selectedValue == item, onClick = {
+                        selectedValue = item
+                        onSelectionChanged(item)
+                    })
                     Text(item)
                 }
             }
@@ -86,8 +78,7 @@ fun SelectOptionScreen(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
             )
             FormattedPriceLabel(
-                subtotal = subtotal,
-                modifier = Modifier
+                subtotal = subtotal, modifier = Modifier
                     .align(Alignment.End)
                     .padding(
                         top = dimensionResource(R.dimen.padding_medium),
@@ -102,16 +93,15 @@ fun SelectOptionScreen(
                 .weight(1f, false),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.Bottom
-        ){
-            OutlinedButton(modifier = Modifier.weight(1f), onClick = {}) {
+        ) {
+            OutlinedButton(
+                modifier = Modifier.weight(1f), onClick = onCancelButtonClicked
+            ) {
                 Text(stringResource(R.string.cancel))
             }
-            Button(
-                modifier = Modifier.weight(1f),
+            Button(modifier = Modifier.weight(1f),
                 // the button is enabled when the user makes a selection
-                enabled = selectedValue.isNotEmpty(),
-                onClick = {}
-            ) {
+                enabled = selectedValue.isNotEmpty(), onClick = onNextButtonClicked) {
                 Text(stringResource(R.string.next))
             }
         }
@@ -121,7 +111,7 @@ fun SelectOptionScreen(
 
 @Preview
 @Composable
-fun SelectOptionPreview(){
+fun SelectOptionPreview() {
     SelectOptionScreen(
         subtotal = "299.99",
         options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
